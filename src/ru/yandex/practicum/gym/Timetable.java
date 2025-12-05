@@ -11,7 +11,7 @@ public class Timetable {
     public void addNewTrainingSession(TrainingSession trainingSession) {
 
         //Если дня ещё нет - строим всю иерархию (день-время-список тренировок)
-        if (!timetable.containsKey(trainingSession.getDayOfWeek())){
+        if (!timetable.containsKey(trainingSession.getDayOfWeek())) {
 
             TreeMap<TimeOfDay,ArrayList<TrainingSession>> trainInDay = new TreeMap<>();
             ArrayList<TrainingSession> listOfTrains = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Timetable {
             //если день уже есть - проверяем - есть ли уже ключ со временем - если да - просто
             //добавляем в него в список - ещё одну тренировку
             TreeMap<TimeOfDay,ArrayList<TrainingSession>> trainInDay = timetable.get(trainingSession.getDayOfWeek());
-            if (trainInDay.containsKey(trainingSession.getTimeOfDay())){
+            if (trainInDay.containsKey(trainingSession.getTimeOfDay())) {
                trainInDay.get(trainingSession.getTimeOfDay()).add(trainingSession);
             } else {
                 //если такого времени в этот день еще не было - добавляем время в ключ и в значение -
@@ -36,8 +36,8 @@ public class Timetable {
         }
 
         //Соберем тренировки в хэш-таблицу
-        countOfTrains.put(  trainingSession.getCoach(),
-                            countOfTrains.getOrDefault(trainingSession.getCoach(),0) + 1);
+        countOfTrains.put(trainingSession.getCoach(),
+                countOfTrains.getOrDefault(trainingSession.getCoach(),0) + 1);
     }
 
     public TreeMap<TimeOfDay,ArrayList<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
@@ -52,7 +52,7 @@ public class Timetable {
         return result != null ? result : new ArrayList<>();
     }
 
-    public Map<Coach,Integer> getCountByCoaches(){
+    public Map<Coach,Integer> getCountByCoaches() {
         /*для возврата в виде отсортированного по убыванию количества тренировок списка
         возьмем исходную мапу, в которую собираем данные при каждом создании тренировки,
         отсортируем её записи по значению в обратном порядке, а результат подсобирем в
