@@ -41,15 +41,43 @@ public class Timetable {
     }
 
     public TreeMap<TimeOfDay,ArrayList<TrainingSession>> getTrainingSessionsForDay(DayOfWeek dayOfWeek) {
-        //чтобы сразу можно было использовать size() - защитимся от null значения по ключу
         TreeMap<TimeOfDay, ArrayList<TrainingSession>> result = timetable.get(dayOfWeek);
-        return result != null ? result : new TreeMap<>();
+        if (result == null) {
+            return new TreeMap<>();
+        }
+        //Возвращаем не оригинальную структуру, а копию
+        TreeMap<TimeOfDay, ArrayList<TrainingSession>> retCopyMap = new TreeMap<>();
+        for (Map.Entry<TimeOfDay, ArrayList<TrainingSession>> entry : result.entrySet()) {
+            // Копируем каждый список отдельно
+            ArrayList<TrainingSession> listCopy = new ArrayList<>(entry.getValue());
+            retCopyMap.put(entry.getKey(), listCopy);
+        }
+
+        return retCopyMap;
     }
 
     public ArrayList<TrainingSession> getTrainingSessionsForDayAndTime(DayOfWeek dayOfWeek, TimeOfDay timeOfDay) {
-        //чтобы сразу можно было использовать size() - защитимся от null значения по ключу
-        ArrayList<TrainingSession> result = timetable.get(dayOfWeek).get(timeOfDay);
-        return result != null ? result : new ArrayList<>();
+        /*чтобы на строке timetable.get(dayOfWeek).get(timeOfDay); не поймать nullPointerException
+        в результате отсутствия данных за день - разделим на 2 шага выборку и отдельно проверим - есть ли данные
+        для этого дня, если да - идем дальше, если нет - возвращаем пустую коллекцию, и потом - если данные найдены -
+        идем по ключу "время тренировки"
+         */
+
+        // Получаем исходную структуру для дня
+        TreeMap<TimeOfDay, ArrayList<TrainingSession>> dayMap = timetable.get(dayOfWeek);
+
+        // Если день не найден или время не найдено — возвращаем пустой список
+        if (dayMap == null) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<TrainingSession> result = dayMap.get(timeOfDay);
+        if (result == null) {
+            return new ArrayList<>();
+        }
+
+        // Возвращаем копию списка
+        return new ArrayList<>(result);
     }
 
     public Map<Coach,Integer> getCountByCoaches() {
